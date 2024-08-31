@@ -1,8 +1,8 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
-const stockRoutes = require('../backend/Routes/StockRouter');
-const userRoutes = require('../backend/Routes/UserRouter');
+const stockRoutes = require('./Routes/StockRouter');
+const userRoutes = require('./Routes/UserRouter');
 const cors = require('cors');   
 
 mongoose.connect('mongodb+srv://taruunprasathgs2022eee:K83QmHmXHzs2DfJI@cluster-taruun.skzkrkf.mongodb.net/agrivikash?retryWrites=true&w=majority&appName=Cluster-Taruun/agrivikash')
