@@ -1,25 +1,19 @@
 const Stock = require('../Model/StockModel');
-const { v4: uuidv4 } = require('uuid');
-
 
 exports.getStock = async (req, res) => {
     try {
         const stocks = await Stock.find();
-        res.send(stocks);
+        res.status(200).json(stocks);
     } catch (err) {
-        console.log(err);
+        console.error('Error retrieving stocks:', err.message);
         res.status(500).json({ error: "Failed to retrieve stocks" });
     }
 };
 
-
 exports.createStock = async (req, res) => {
     try {
         const { name, state, instock, outstock } = req.body;
-        console.log("Request body: ", req.body);
-
         const stock = new Stock({
-            id: uuidv4(),
             name,
             state,
             instock,
@@ -27,13 +21,12 @@ exports.createStock = async (req, res) => {
         });
 
         await stock.save();
-        res.status(200).json("Stock Created Successfully");
+        res.status(201).json({ message: "Stock Created Successfully", stock });
     } catch (err) {
-        console.log(err);
+        console.error('Error creating stock:', err.message);
         res.status(500).json({ error: "Failed to create stock" });
     }
 };
-
 
 exports.updateStock = async (req, res) => {
     try {
@@ -43,20 +36,19 @@ exports.updateStock = async (req, res) => {
         const updatedStock = await Stock.findByIdAndUpdate(
             id,
             { name, state, instock, outstock },
-            { new: true } 
+            { new: true }
         );
 
         if (!updatedStock) {
             return res.status(404).json({ error: "Stock not found" });
         }
 
-        res.status(200).json("Stock Updated Successfully");
+        res.status(200).json({ message: "Stock Updated Successfully", updatedStock });
     } catch (err) {
-        console.log(err);
+        console.error('Error updating stock:', err.message);
         res.status(500).json({ error: "Failed to update stock" });
     }
 };
-
 
 exports.deleteStock = async (req, res) => {
     try {
@@ -68,9 +60,9 @@ exports.deleteStock = async (req, res) => {
             return res.status(404).json({ error: "Stock not found" });
         }
 
-        res.status(200).json("Stock Deleted Successfully");
+        res.status(200).json({ message: "Stock Deleted Successfully", deletedStock });
     } catch (err) {
-        console.log(err);
+        console.error('Error deleting stock:', err.message);
         res.status(500).json({ error: "Failed to delete stock" });
     }
 };
