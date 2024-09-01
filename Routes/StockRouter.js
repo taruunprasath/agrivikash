@@ -6,6 +6,6 @@ const auth = require('../Middleware/Auth');
 router.get("/",auth,StockController.getStock);
 router.post("/",auth,StockController.createStock);
 router.put("/",auth,StockController.updateStock);
-router.delete("/",auth,StockController.deleteStock);
+router.delete("/:id",auth,StockController.deleteStock);
 
 module.exports = router;
