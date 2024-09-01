@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const Stock = require('../models/Stock');
-const { verifyToken } = require('../middlewares/auth');
+const Stock = require('../Model/StockModel');
+const { verifyToken } = require('../Middleware/Auth');
 
 router.post('/stocks', verifyToken, async (req, res) => {
     try {
