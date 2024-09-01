@@ -1,68 +1,57 @@
-const Stock = require('../Model/StockModel');
+const Stock = require('../Models/Stock');
 
-exports.getStock = async (req, res) => {
-    try {
-        const stocks = await Stock.find();
-        res.status(200).json(stocks);
-    } catch (err) {
-        console.error('Error retrieving stocks:', err.message);
-        res.status(500).json({ error: "Failed to retrieve stocks" });
-    }
+exports.getStocksForUser = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const stocks = await Stock.find({ userId: userId });
+    res.json(stocks);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching stocks', error: error.message });
+  }
 };
 
 exports.createStock = async (req, res) => {
-    try {
-        const { name, state, instock, outstock } = req.body;
-        const stock = new Stock({
-            name,
-            state,
-            instock,
-            outstock
-        });
-
-        await stock.save();
-        res.status(201).json({ message: "Stock Created Successfully", stock });
-    } catch (err) {
-        console.error('Error creating stock:', err.message);
-        res.status(500).json({ error: "Failed to create stock" });
-    }
+  try {
+    const userId = req.userId;
+    const newStock = new Stock({
+      ...req.body,
+      userId: userId,
+    });
+    const savedStock = await newStock.save();
+    res.status(201).json(savedStock);
+  } catch (error) {
+    res.status(500).json({ message: 'Error creating stock', error: error.message });
+  }
 };
 
 exports.updateStock = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { name, state, instock, outstock } = req.body;
-
-        const updatedStock = await Stock.findByIdAndUpdate(
-            id,
-            { name, state, instock, outstock },
-            { new: true }
-        );
-
-        if (!updatedStock) {
-            return res.status(404).json({ error: "Stock not found" });
-        }
-
-        res.status(200).json({ message: "Stock Updated Successfully", updatedStock });
-    } catch (err) {
-        console.error('Error updating stock:', err.message);
-        res.status(500).json({ error: "Failed to update stock" });
+  try {
+    const userId = req.userId;
+    const { id } = req.params;
+    const updatedStock = await Stock.findOneAndUpdate(
+      { _id: id, userId: userId },
+      req.body,
+      { new: true }
+    );
+    if (!updatedStock) {
+      return res.status(404).json({ message: 'Stock not found or unauthorized' });
     }
+    res.json(updatedStock);
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating stock', error: error.message });
+  }
 };
 
 exports.deleteStock = async (req, res) => {
-    try {
-        const { id } = req.params;
-
-        const deletedStock = await Stock.findByIdAndDelete(id);
-
-        if (!deletedStock) {
-            return res.status(404).json({ error: "Stock not found" });
-        }
-
-        res.status(200).json({ message: "Stock Deleted Successfully", deletedStock });
-    } catch (err) {
-        console.error('Error deleting stock:', err.message);
-        res.status(500).json({ error: "Failed to delete stock" });
+  try {
+    const userId = req.userId;
+    const { id } = req.params;
+    const deletedStock = await Stock.findOneAndDelete({ _id: id, userId: userId });
+    if (!deletedStock) {
+      return res.status(404).json({ message: 'Stock not found or unauthorized' });
     }
+    res.json({ message: 'Stock deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting stock', error: error.message });
+  }
 };
