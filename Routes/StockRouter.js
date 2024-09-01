@@ -1,11 +1,11 @@
 const StockController = require('../Controllers/StockController');
 const express = require('express');
 const router = express.Router();
-const auth = require('../Middleware/Auth');
+// const auth = require('../Middleware/Auth');
 
-router.get("/",auth,StockController.getStock);
-router.post("/",auth,StockController.createStock);
-router.put("/",auth,StockController.updateStock);
-router.delete("/",auth,StockController.deleteStock);
+router.get("/",StockController.getStock);
+router.post("/",StockController.createStock);
+router.put("/",StockController.updateStock);
+router.delete("/",StockController.deleteStock);
 
 module.exports = router;
