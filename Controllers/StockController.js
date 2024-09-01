@@ -1,4 +1,4 @@
-const Stock = require('../Models/Stock');
+const Stock = require('../Model/StockModel');
 
 exports.getStocksForUser = async (req, res) => {
   try {
